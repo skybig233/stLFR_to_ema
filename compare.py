@@ -27,13 +27,16 @@ unmatch=0
 nokey=0
 distance_1_10=0
 distance_11_100=0
+small_data_n=100
 
 unmatchlist='unmatchlist'
 nokeylist='nokeylist'
+count='count'
 with open(querysam,mode='r') as querysamfile,\
         open(referencesam,mode='r') as referencesamfile,\
         open(unmatchlist,mode='w')as unmatchlistfile,\
-        open(nokeylist,mode='w')as nokeylistfile:
+        open(nokeylist,mode='w')as nokeylistfile, \
+        open(count, mode='w')as countfile:
     #1.create refer dic
     for line in referencesamfile:
         line_list=line.split('\t')
@@ -53,19 +56,20 @@ with open(querysam,mode='r') as querysamfile,\
             else:
                 unmatch+=1
                 distance = int(queryposition) - int(d[queryID])
-
-                if(distance<=10):
+                absolute_distance=abs(distance)
+                if(absolute_distance<=10):
                     distance_1_10+=1
-                elif(distance<=100):
+                elif(absolute_distance<=100):
                     distance_11_100+=1
 
-                if(unmatch<100):
+                if(unmatch<small_data_n):
                     unmatchlistfile.write("distance="+str(distance)+"\n")
                     unmatchlistfile.write(line)
         except KeyError:
             nokey+=1
-            if(nokey<100):
+            if(nokey<small_data_n):
                 nokeylistfile.write(line)
+    countfile.write()
     print("match:"+str(match))
     print("unmatch:"+str(unmatch))
     print("distance_1_10:"+str(distance_1_10))
