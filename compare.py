@@ -23,10 +23,18 @@ def flagTheRead(ID,flag):
 def getPosition(string):#input a SA\XA string output a position list
     tmp=[]
     stringlist=string.split(';')
+
     for i in stringlist:
-        tmp.append(i.split(',')[1])
+        try:
+            if(i!='\n'):
+                tmp.append(int(i.split(',')[1]))
+        except IndexError:
+            return tmp
+            # print(string+"\n"+'i:'+i)
     return tmp
 def getSAXA(fieldlist):
+    SA=[]
+    XA=[]
     for i in fieldlist:
         if ('SA' in i):
             SA=getPosition(i)
@@ -34,8 +42,9 @@ def getSAXA(fieldlist):
             XA=getPosition(i)
     return SA,XA
 
-# referencesam="C:\\Users\\DELL\\Desktop\\bwa-mem-aln-pe.sam.smcpy"
-# querysam="C:\\Users\\DELL\\Desktop\\ema_final.sam.smcpy"
+# referencesam="C:\\Users\\DELL\\Desktop\\ema_final.sam.smcpy"
+# querysam="C:\\Users\\DELL\\Desktop\\bwa-mem-aln-pe.sam.smcpy"
+# prefix=''
 
 d={}
 match=0
@@ -75,9 +84,9 @@ with open(querysam,mode='r') as querysamfile,\
             else:
                 unmatch+=1
                 SA_positionlist,XA_positionlist=getSAXA(line_list[11:])
-                if(d[queryID] in SA_positionlist):
+                if(int(d[queryID]) in SA_positionlist):
                     match_to_SA+=1
-                if(d[queryID] in XA_positionlist):
+                if(int(d[queryID]) in XA_positionlist):
                     match_to_XA+=1
                 distance = int(queryposition) - int(d[queryID])
                 absolute_distance=abs(distance)
@@ -99,8 +108,10 @@ with open(querysam,mode='r') as querysamfile,\
     distance_1_10="distance_1_10:"+str(distance_1_10)+'\n'
     distance_11_100="distance_11_100:" + str(distance_11_100)+'\n'
     nokey="nokey:"+str(nokey)+'\n'
+    match_to_SA="match_to_SA:"+str(match_to_SA)+'\n'
+    match_to_XA="match_to_XA:"+str(match_to_XA)+'\n'
 
-    log=match+unmatch+distance_1_10+distance_11_100+nokey
+    log=match+unmatch+match_to_SA+match_to_XA+distance_1_10+distance_11_100+nokey
     countfile.write(log)
     print(log)
     # print("match:"+str(match))
