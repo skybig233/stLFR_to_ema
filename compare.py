@@ -3,11 +3,13 @@ import argparse
 parser=argparse.ArgumentParser()
 parser.add_argument('-q','--querysam')
 parser.add_argument('-r','--referencesam')
+parser.add_argument('-p','--prefix',default='')
 args=parser.parse_args()
 
 try:
     querysam=args.querysam
     referencesam=args.referencesam
+    prefix=args.prefix
 except Exception as e:
     print('woops')
 
@@ -45,9 +47,9 @@ match_to_SA=0
 match_to_XA=0
 small_data_n=100
 
-unmatchlist='unmatchlist'
-nokeylist='nokeylist'
-count='count'
+unmatchlist=prefix+'_unmatchlist'
+nokeylist=prefix+'_nokeylist'
+count=prefix+'_count'
 
 with open(querysam,mode='r') as querysamfile,\
         open(referencesam,mode='r') as referencesamfile,\
@@ -91,9 +93,18 @@ with open(querysam,mode='r') as querysamfile,\
             nokey+=1
             if(nokey<small_data_n):
                 nokeylistfile.write(line)
-    countfile.write()
-    print("match:"+str(match))
-    print("unmatch:"+str(unmatch))
-    print("distance_1_10:"+str(distance_1_10))
-    print("distance_11_100:"+str(distance_11_100))
-    print("nokey:"+str(nokey))
+
+    match="match:"+str(match)+'\n'
+    unmatch="unmatch:"+str(unmatch)+'\n'
+    distance_1_10="distance_1_10:"+str(distance_1_10)+'\n'
+    distance_11_100="distance_11_100:" + str(distance_11_100)+'\n'
+    nokey="nokey:"+str(nokey)+'\n'
+
+    log=match+unmatch+distance_1_10+distance_11_100+nokey
+    countfile.write(log)
+    print(log)
+    # print("match:"+str(match))
+    # print("unmatch:"+str(unmatch))
+    # print("distance_1_10:"+str(distance_1_10))
+    # print("distance_11_100:"+str(distance_11_100))
+    # print("nokey:"+str(nokey))
