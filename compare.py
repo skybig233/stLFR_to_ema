@@ -79,8 +79,9 @@ with open(querysam,mode='r') as querysamfile,\
     distance_11_100="distance_11_100:" + str(distance_11_100)+'\n'
     nokey="nokey:"+str(nokey)+'\n'
 
-    countfile.write(match,unmatch,distance_1_10,distance_11_100,nokey)
-    print(match+unmatch+distance_1_10+distance_11_100+nokey)
+    log=match+unmatch+distance_1_10+distance_11_100+nokey
+    countfile.write(log)
+    print(log)
     # print("match:"+str(match))
     # print("unmatch:"+str(unmatch))
     # print("distance_1_10:"+str(distance_1_10))
