@@ -18,6 +18,20 @@ def flagTheRead(ID,flag):
         ID=ID+'/2'
     return ID
 
+def getPosition(string):#input a SA\XA string output a position list
+    tmp=[]
+    stringlist=string.split(';')
+    for i in stringlist:
+        tmp.append(i.split(',')[1])
+    return tmp
+def getSAXA(fieldlist):
+    for i in fieldlist:
+        if ('SA' in i):
+            SA=getPosition(i)
+        if('XA' in i):
+            XA=getPosition(i)
+    return SA,XA
+
 # referencesam="C:\\Users\\DELL\\Desktop\\bwa-mem-aln-pe.sam.smcpy"
 # querysam="C:\\Users\\DELL\\Desktop\\ema_final.sam.smcpy"
 
@@ -27,11 +41,14 @@ unmatch=0
 nokey=0
 distance_1_10=0
 distance_11_100=0
+match_to_SA=0
+match_to_XA=0
 small_data_n=100
 
 unmatchlist='unmatchlist'
 nokeylist='nokeylist'
 count='count'
+
 with open(querysam,mode='r') as querysamfile,\
         open(referencesam,mode='r') as referencesamfile,\
         open(unmatchlist,mode='w')as unmatchlistfile,\
@@ -55,6 +72,11 @@ with open(querysam,mode='r') as querysamfile,\
                 match+=1
             else:
                 unmatch+=1
+                SA_positionlist,XA_positionlist=getSAXA(line_list[11:])
+                if(d[queryID] in SA_positionlist):
+                    match_to_SA+=1
+                if(d[queryID] in XA_positionlist):
+                    match_to_XA+=1
                 distance = int(queryposition) - int(d[queryID])
                 absolute_distance=abs(distance)
                 if(absolute_distance<=10):
